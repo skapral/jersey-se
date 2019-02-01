@@ -116,9 +116,27 @@
                     <trimStackTrace>false</trimStackTrace>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.pragmaticobjects.oo.atom</groupId>
+                <artifactId>atom-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate-annotations</goal>
+                            <goal>instrument</goal>
+                            <goal>instrument-tests</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>com.pragmaticobjects.oo.atom</groupId>
+                    <artifactId>atom-maven-plugin</artifactId>
+                    <version>0.0.13</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
