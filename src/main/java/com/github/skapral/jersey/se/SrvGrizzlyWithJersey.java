@@ -25,7 +25,7 @@
  */
 package com.github.skapral.jersey.se;
 
-import com.github.skapral.jersey.se.config.ConfigProperty;
+import com.github.skapral.config.ConfigProperty;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.servlet.WebappContext;
 import org.glassfish.jersey.server.ResourceConfig;

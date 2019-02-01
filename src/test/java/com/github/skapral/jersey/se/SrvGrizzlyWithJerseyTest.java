@@ -24,7 +24,7 @@
  */
 package com.github.skapral.jersey.se;
 
-import com.github.skapral.jersey.se.config.CpStatic;
+import com.github.skapral.config.CpStatic;
 import com.github.skapral.jersey.se.configs.SimpleConfig;
 import com.pragmaticobjects.oo.tests.TestCase;
 import com.pragmaticobjects.oo.tests.junit5.TestsSuite;
