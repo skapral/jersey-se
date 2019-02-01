@@ -1,7 +1,7 @@
 # Jersey Standalone
 
 [![Build Status (Travis)](https://img.shields.io/travis/skapral/jersey-se/master.svg)](https://travis-ci.org/skapral/jersey-se)
-[![Build status (AppVeyor)](https://ci.appveyor.com/api/projects/status/sumvi0c7teo9oq94?svg=true)](https://ci.appveyor.com/project/skapral/jersey-se)
+[![Build status (AppVeyor)](https://ci.appveyor.com/api/projects/status/ct27lkh20ql3qios/branch/master?svg=true)](https://ci.appveyor.com/project/skapral/jersey-se/branch/master)
 [![Codecov](https://codecov.io/gh/skapral/jersey-se/branch/master/graph/badge.svg)](https://codecov.io/gh/skapral/jersey-se)
 
 Compact self-sufficient JAX-RS distribution based on Grizzly and Jersey.
