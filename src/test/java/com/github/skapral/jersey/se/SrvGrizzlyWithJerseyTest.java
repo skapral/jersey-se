@@ -42,16 +42,66 @@ public class SrvGrizzlyWithJerseyTest extends TestsSuite {
     public SrvGrizzlyWithJerseyTest() {
         super(
             new TestCase(
-                "Jersey server responds",
+                "Jersey server responds on endpoint call",
                 new AssertAssumingServer(
                     new SrvGrizzlyWithJersey(
-                        new CpStatic("8080"),
-                        new SimpleConfig()
+                        new CpStatic("20000"),
+                        new SimpleConfig(),
+                        "api",
+                        "stat"
                     ),
                     new AssertHttpEndpointProducesExpectedResponse(
-                        () -> new HttpGet("http://localhost:8080/status"),
+                        () -> new HttpGet("http://localhost:20000/api/status"),
                         200,
                         "OK"
+                    )
+                )
+            ),
+            new TestCase(
+                "Jersey server responds on static contents call",
+                new AssertAssumingServer(
+                    new SrvGrizzlyWithJersey(
+                        new CpStatic("20001"),
+                        new SimpleConfig(),
+                        "api",
+                        "stat"
+                    ),
+                    new AssertHttpEndpointProducesExpectedResponse(
+                        () -> new HttpGet("http://localhost:20001/stat/file"),
+                        200,
+                        "Static content"
+                    )
+                )
+            ),
+            new TestCase(
+                "Server serves api endpoints at context root",
+                new AssertAssumingServer(
+                    new SrvGrizzlyWithJersey(
+                        new CpStatic("20002"),
+                        new SimpleConfig(),
+                        "/",
+                        "stat"
+                    ),
+                    new AssertHttpEndpointProducesExpectedResponse(
+                        () -> new HttpGet("http://localhost:20002/status"),
+                        200,
+                        "OK"
+                    )
+                )
+            ),
+            new TestCase(
+                "Server serves static resources at context root",
+                new AssertAssumingServer(
+                    new SrvGrizzlyWithJersey(
+                        new CpStatic("20003"),
+                        new SimpleConfig(),
+                        "api",
+                        "/"
+                    ),
+                    new AssertHttpEndpointProducesExpectedResponse(
+                        () -> new HttpGet("http://localhost:20003/file"),
+                        200,
+                        "Static content"
                     )
                 )
             )

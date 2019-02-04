@@ -33,6 +33,8 @@ import org.glassfish.jersey.servlet.ServletContainer;
 
 import javax.servlet.ServletRegistration;
 import java.io.IOException;
+import org.glassfish.grizzly.http.server.CLStaticHttpHandler;
+import org.glassfish.grizzly.http.server.HttpHandler;
 
 /**
  * Grizzly server with jersey-based endpoints
@@ -42,7 +44,40 @@ import java.io.IOException;
 public class SrvGrizzlyWithJersey implements Server {
     private final ConfigProperty port;
     private final ResourceConfig config;
+    private final String apiRoot;
+    private final String staticRoot;
 
+    /**
+     * Ctor.
+     * 
+     * @param port Port.
+     * @param config Jersey resource config.
+     * @param apiRoot context root for endpoint calls
+     * @param staticRoot context root for static files access
+     */
+    public SrvGrizzlyWithJersey(ConfigProperty port, ResourceConfig config, String apiRoot, String staticRoot) {
+        this.port = port;
+        this.config = config;
+        this.apiRoot = apiRoot;
+        this.staticRoot = staticRoot;
+    }
+    
+    /**
+     * Ctor.
+     * 
+     * @param port Port.
+     * @param config Jersey resource config.
+     * @param apiRoot context root for endpoint calls
+     */
+    private SrvGrizzlyWithJersey(ConfigProperty port, ResourceConfig config, String apiRoot) {
+        this(
+            port,
+            config,
+            apiRoot,
+            "/"
+        );
+    }
+    
     /**
      * Ctor.
      *
@@ -50,19 +85,32 @@ public class SrvGrizzlyWithJersey implements Server {
      * @param config Jersey resource config.
      */
     public SrvGrizzlyWithJersey(ConfigProperty port, ResourceConfig config) {
-        this.port = port;
-        this.config = config;
+        this(
+            port,
+            config,
+            "/api",
+            "/"
+        );
     }
 
     @Override
     public final ServerStopHandle start() {
         try {
-            WebappContext webappContext = new WebappContext("grizzly web context", "");
+            final String apiRoot = this.apiRoot.startsWith("/") ? this.apiRoot : "/" + this.apiRoot;
+            final String staticRoot = this.staticRoot.startsWith("/") ? this.staticRoot : "/" + this.staticRoot;
+            final WebappContext webappContext = new WebappContext("grizzly web context", "");
             {
                 ServletRegistration servletRegistration = webappContext.addServlet("Jersey", new ServletContainer(config));
-                servletRegistration.addMapping("/*");
+                servletRegistration.addMapping(
+                    apiRoot.endsWith("/") ? apiRoot + "*" : apiRoot + "/*"
+                );
             }
-            HttpServer server = HttpServer.createSimpleServer("/", port.optionalValue().map(Integer::valueOf).get());
+            final HttpServer server = HttpServer.createSimpleServer("/", port.optionalValue().map(Integer::valueOf).get());
+            final HttpHandler httpHandler = new CLStaticHttpHandler(this.getClass().getClassLoader(), "/static/");
+            server.getServerConfiguration().addHttpHandler(
+                httpHandler,
+                staticRoot.endsWith("/") ? staticRoot + "*" : staticRoot + "/*"
+            );
             webappContext.deploy(server);
             server.start();
             return () -> {
