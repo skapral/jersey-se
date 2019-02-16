@@ -51,7 +51,7 @@ public class StatusEndpoint {
 public static void main(String... args) throws Exception {
     new SrvGrizzlyWithJerseyAndJtwig(
         new Cp_PORT(),
-        new StatusEndpoint()
+        new SimpleConfig()
     ).start();
     System.in.read(); // Server instance uses daemon threads, so hold
     // main thread until you need the server online.
