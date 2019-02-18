@@ -104,6 +104,54 @@ public class SrvGrizzlyWithJerseyTest extends TestsSuite {
                         "Static content"
                     )
                 )
+            ),
+            new TestCase(
+                "Server responds with default page",
+                new AssertAssumingServer(
+                    new SrvGrizzlyWithJersey(
+                        new CpStatic("20004"),
+                        new SimpleConfig(),
+                        "api",
+                        "/"
+                    ),
+                    new AssertHttpEndpointProducesExpectedResponse(
+                        () -> new HttpGet("http://localhost:20004/"),
+                        200,
+                        "<!doctype html><meta charset=utf-8><title>Hello world</title>"
+                    )
+                )
+            ),
+            new TestCase(
+                "Server responds with default page on non-root static resource",
+                new AssertAssumingServer(
+                    new SrvGrizzlyWithJersey(
+                        new CpStatic("20005"),
+                        new SimpleConfig(),
+                        "api",
+                        "/"
+                    ),
+                    new AssertHttpEndpointProducesExpectedResponse(
+                        () -> new HttpGet("http://localhost:20005/nonroot"),
+                        200,
+                        "<!doctype html><meta charset=utf-8><title>Hello world</title>"
+                    )
+                )
+            ),
+            new TestCase(
+                "Server responds with default page on non-root static context path",
+                new AssertAssumingServer(
+                    new SrvGrizzlyWithJersey(
+                        new CpStatic("20006"),
+                        new SimpleConfig(),
+                        "api",
+                        "static"
+                    ),
+                    new AssertHttpEndpointProducesExpectedResponse(
+                        () -> new HttpGet("http://localhost:20006/static/"),
+                        200,
+                        "<!doctype html><meta charset=utf-8><title>Hello world</title>"
+                    )
+                )
             )
         );
     }
