@@ -105,7 +105,7 @@ public class SrvGrizzlyWithJersey implements Server {
                     apiRoot.endsWith("/") ? apiRoot + "*" : apiRoot + "/*"
                 );
             }
-            final HttpServer server = HttpServer.createSimpleServer("/", port.optionalValue().map(Integer::valueOf).get());
+            final HttpServer server = HttpServer.createSimpleServer(null, port.optionalValue().map(Integer::valueOf).get());
             final HttpHandler httpHandler = new CLStaticHttpHandler(this.getClass().getClassLoader(), "/static/");
             server.getServerConfiguration().addHttpHandler(
                 httpHandler,
