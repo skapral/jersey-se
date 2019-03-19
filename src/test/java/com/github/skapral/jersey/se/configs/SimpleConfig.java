@@ -25,10 +25,14 @@
 package com.github.skapral.jersey.se.configs;
 
 import com.pragmaticobjects.oo.atom.anno.NotAtom;
+import java.io.InputStream;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.apache.commons.io.IOUtils;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.ResourceConfig;
 
 /**
@@ -39,10 +43,11 @@ import org.glassfish.jersey.server.ResourceConfig;
 public class SimpleConfig extends ResourceConfig {
     /**
      * Ctor.
+     * @param endpoints JAX-RS annotated endpoints
      */
-    public SimpleConfig() {
+    public SimpleConfig(Class... endpoints) {
         super(
-            StatusEndpoint.class
+            endpoints
         );
     }
     
@@ -59,6 +64,27 @@ public class SimpleConfig extends ResourceConfig {
         @Produces(MediaType.TEXT_PLAIN)
         public String status() {
             return "OK";
+        }
+    }
+    
+    /**
+     * File upload endpoint
+     */
+    @NotAtom
+    @Path("upload")
+    public static class FileUploadEndpoint {
+        /**
+         * @param stream Uploaded byte stream
+         * @return returns "OK"
+         */
+        @POST
+        @Produces(MediaType.TEXT_PLAIN)
+        public String uploadFile(@FormDataParam("file") InputStream stream) {
+            try {
+                return IOUtils.toString(stream, "UTF-8");
+            } catch(Exception ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 }

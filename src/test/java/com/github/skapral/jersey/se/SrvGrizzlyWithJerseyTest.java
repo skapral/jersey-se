@@ -26,9 +26,17 @@ package com.github.skapral.jersey.se;
 
 import com.github.skapral.config.CpStatic;
 import com.github.skapral.jersey.se.configs.SimpleConfig;
+import static com.github.skapral.jersey.se.configs.SimpleConfig.*;
 import com.pragmaticobjects.oo.tests.TestCase;
 import com.pragmaticobjects.oo.tests.junit5.TestsSuite;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.InputStreamBody;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 /**
  * Tests suite for {@link SrvGrizzlyWithJerseyTest}.
@@ -46,7 +54,9 @@ public class SrvGrizzlyWithJerseyTest extends TestsSuite {
                 new AssertAssumingServer(
                     new SrvGrizzlyWithJersey(
                         new CpStatic("20000"),
-                        new SimpleConfig(),
+                        new SimpleConfig(
+                            StatusEndpoint.class
+                        ),
                         "api",
                         "stat"
                     ),
@@ -62,7 +72,9 @@ public class SrvGrizzlyWithJerseyTest extends TestsSuite {
                 new AssertAssumingServer(
                     new SrvGrizzlyWithJersey(
                         new CpStatic("20001"),
-                        new SimpleConfig(),
+                        new SimpleConfig(
+                            StatusEndpoint.class
+                        ),
                         "api",
                         "stat"
                     ),
@@ -78,7 +90,9 @@ public class SrvGrizzlyWithJerseyTest extends TestsSuite {
                 new AssertAssumingServer(
                     new SrvGrizzlyWithJersey(
                         new CpStatic("20002"),
-                        new SimpleConfig(),
+                        new SimpleConfig(
+                            StatusEndpoint.class
+                        ),
                         "/",
                         "stat"
                     ),
@@ -94,7 +108,9 @@ public class SrvGrizzlyWithJerseyTest extends TestsSuite {
                 new AssertAssumingServer(
                     new SrvGrizzlyWithJersey(
                         new CpStatic("20003"),
-                        new SimpleConfig(),
+                        new SimpleConfig(
+                            StatusEndpoint.class
+                        ),
                         "api",
                         "/"
                     ),
@@ -110,7 +126,9 @@ public class SrvGrizzlyWithJerseyTest extends TestsSuite {
                 new AssertAssumingServer(
                     new SrvGrizzlyWithJersey(
                         new CpStatic("20004"),
-                        new SimpleConfig(),
+                        new SimpleConfig(
+                            StatusEndpoint.class
+                        ),
                         "api",
                         "/"
                     ),
@@ -126,7 +144,9 @@ public class SrvGrizzlyWithJerseyTest extends TestsSuite {
                 new AssertAssumingServer(
                     new SrvGrizzlyWithJersey(
                         new CpStatic("20005"),
-                        new SimpleConfig(),
+                        new SimpleConfig(
+                            StatusEndpoint.class
+                        ),
                         "api",
                         "/"
                     ),
@@ -142,7 +162,9 @@ public class SrvGrizzlyWithJerseyTest extends TestsSuite {
                 new AssertAssumingServer(
                     new SrvGrizzlyWithJersey(
                         new CpStatic("20006"),
-                        new SimpleConfig(),
+                        new SimpleConfig(
+                            StatusEndpoint.class
+                        ),
                         "api",
                         "static"
                     ),
@@ -150,6 +172,36 @@ public class SrvGrizzlyWithJerseyTest extends TestsSuite {
                         () -> new HttpGet("http://localhost:20006/static/"),
                         200,
                         "<!doctype html><meta charset=utf-8><title>Hello world</title>"
+                    )
+                )
+            ),
+            new TestCase(
+                "Server file upload supported",
+                new AssertAssumingServer(
+                    new SrvGrizzlyWithJersey(
+                        new CpStatic("20007"),
+                        new SimpleConfig(
+                            MultiPartFeature.class,
+                            FileUploadEndpoint.class
+                        ),
+                        "api",
+                        "static"
+                    ),
+                    new AssertHttpEndpointProducesExpectedResponse(
+                        () -> {
+                            try {
+                                HttpPost httpPost = new HttpPost("http://localhost:20007/upload/");
+                                MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+                                builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+                                builder.addPart("file", new InputStreamBody(IOUtils.toInputStream("lorem ipsum", "UTF-8"), ContentType.DEFAULT_BINARY));
+                                httpPost.setEntity(builder.build());
+                                return httpPost;
+                            } catch(Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        },
+                        200,
+                        "lorem ipsum"
                     )
                 )
             )
