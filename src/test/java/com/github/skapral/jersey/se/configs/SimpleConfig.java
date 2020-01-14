@@ -63,7 +63,7 @@ public class SimpleConfig extends ResourceConfig {
          */
         @GET
         @Produces(MediaType.TEXT_PLAIN)
-        public String status() {
+        public final String status() {
             return "OK";
         }
     }
@@ -80,7 +80,7 @@ public class SimpleConfig extends ResourceConfig {
          */
         @POST
         @Produces(MediaType.TEXT_PLAIN)
-        public String uploadFile(@FormDataParam("file") InputStream stream) {
+        public final String uploadFile(@FormDataParam("file") InputStream stream) {
             try {
                 return IOUtils.toString(stream, "UTF-8");
             } catch(Exception ex) {
