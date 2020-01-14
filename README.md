@@ -49,7 +49,7 @@ public class StatusEndpoint {
 
 ```
 public static void main(String... args) throws Exception {
-    new SrvGrizzlyWithJerseyAndJtwig(
+    new SrvGrizzlyWithJersey(
         new Cp_PORT(),
         new SimpleConfig()
     ).start();
