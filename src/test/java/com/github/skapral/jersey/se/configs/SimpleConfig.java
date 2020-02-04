@@ -25,7 +25,6 @@
  */
 package com.github.skapral.jersey.se.configs;
 
-import com.pragmaticobjects.oo.atom.anno.NotAtom;
 import java.io.InputStream;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -55,7 +54,6 @@ public class SimpleConfig extends ResourceConfig {
     /**
      * Status endpoint
      */
-    @NotAtom
     @Path("status")
     public static class StatusEndpoint {
         /**
@@ -71,7 +69,6 @@ public class SimpleConfig extends ResourceConfig {
     /**
      * File upload endpoint
      */
-    @NotAtom
     @Path("upload")
     public static class FileUploadEndpoint {
         /**
